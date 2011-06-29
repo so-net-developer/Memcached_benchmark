@@ -33,7 +33,6 @@
     -a {ADPT}   memcached実装を選択する (default: memcached)
         xmemcached      XMemcached
         memcached       Memcached client for Java
-        citrusleaf      Citrusleaf
     -w          計測前にウォームアップする (default:しない)
     -s {ADDR}   memcachedサーバのアドレスを指定する (default: localhost:11211)
     -p {NUM}    スレッド数を指定する (default:10)
@@ -50,7 +49,6 @@
     -a {ADPT}   memcached実装を選択する (default: memcached)
         memcached       Memcached client for Java
         xmemcached      XMemcached
-        citrusleaf      Citrusleaf
     -s {ADDR}   memcachedサーバのアドレスを指定する (default: localhost:11211)
     -tp {NUM}   タスクの並列度を指定する (default: 1)
     -ti {NUM}   タスク実行のインターバルをmsecで指定する
@@ -70,9 +68,3 @@
     -mix-sk	設定するキーの数 (default: 3000)
     -mix-si	設定を実行するインターバルをsecで指定する (default: 3600)
 
-
-補足：
-Citrusleafでの使用方法
-
-java -jar memcached_benchmark-0.7-runnable.jar bench set -a citrusleaf -s
-[node's IP]:3000
