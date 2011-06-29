@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly>
+  <id>runnable</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <unpack>true</unpack>
+      <scope>system</scope>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

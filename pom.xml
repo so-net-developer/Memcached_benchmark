@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Maven2用プロジェクトファイル -->
+<project>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example.app.memcached</groupId>
+  <artifactId>memcached_benchmark</artifactId>
+  <version>0.7</version>
+
+  <packaging>jar</packaging>
+  <name>memcached-benchmark</name>
+
+  <!-- 依存関係設定 -->
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.6</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- ローカルライブラリへの依存 -->
+
+    <dependency>
+      <groupId>net.rubyeye</groupId>
+      <artifactId>yanf4j</artifactId>
+      <version>1.1.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/yanf4j-1.1.1.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>net.rubyeye</groupId>
+      <artifactId>xmemcached</artifactId>
+      <version>1.2.4</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/xmemcached-1.2.4-bugfix.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.danga</groupId>
+      <artifactId>MemCached</artifactId>
+      <version>2.5.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/java_memcached-release_2.5.1.jar</systemPath>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!-- 実行用のクラス指定 (mvn exec:java用) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.example.app.memcached_benchmark.Main</mainClass>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <charset>UTF-8</charset>
+          <docencoding>UTF-8</docencoding>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- 実行jarの作成 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/runnable.xml</descriptor>
+            <descriptor>src/main/assembly/src.xml</descriptor>
+          </descriptors>
+          <archive>
+            <manifest>
+              <mainClass>com.example.app.memcached_benchmark.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
