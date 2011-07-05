@@ -6,6 +6,6 @@ public class TaskParam {
 
     public int revision = 0;
 
-    public String servers = "localhost:11311";
+    public String servers = "localhost:11211";
 
 }
