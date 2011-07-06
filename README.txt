@@ -23,9 +23,9 @@
 
 共通OPTION:
 
-  -kv {STR}     キーのprefix文字列を指定する
-  -vv           可変長の値を利用する
-  -vx           可変長の値の、最大追加長を指定する
+  -kp {STR}     キーのprefix文字列を指定する
+  -vv           可変長の値を利用する/フラグ動作
+  -vx {NUM}     可変長の値の、最大追加長を指定する (default:100)
 
 引数の書式(ベンチマーク時): bench {MODE} [OPTIONS]
 

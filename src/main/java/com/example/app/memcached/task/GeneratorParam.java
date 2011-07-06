@@ -27,6 +27,11 @@ public final class GeneratorParam {
             this.valueLengthIsVariable = true;
             return 1;
         } else if ("-vx".equals(first)) {
+            if (second == null) {
+                System.err.println(
+                        "-vx (value max length) require an argument");
+                return -1;
+            }
             this.valueLengthMax = Integer.parseInt(second);
             return 2;
         }
