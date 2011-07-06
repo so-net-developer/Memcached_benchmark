@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.example.app.memcached.task.Generator;
+import com.example.app.memcached.task.GeneratorParam;
 import com.example.app.memcached_benchmark.task.GetWorkloadTask;
 import com.example.app.memcached_benchmark.task.MemcachedWorkloadTaskFactory;
 import com.example.app.memcached_benchmark.task.MixWorkloadTaskFactory;
@@ -44,12 +46,13 @@ public class Load {
         // 負荷試験のパラメータを取得する.
         WorkloadParam param = new WorkloadParam();
         MemcachedParam param2 = new MemcachedParam();
-        if (!parseArgs(args, param, param2)) {
+        GeneratorParam param3 = new GeneratorParam();
+        if (!parseArgs(args, param, param2, param3)) {
             LOG.error("invalid arguments");
             return;
         }
 
-        run(param, param2);
+        run(param, param2, param3);
     }
 
     /**
@@ -57,7 +60,8 @@ public class Load {
      */
     public static boolean run(
             WorkloadParam workloadParam,
-            MemcachedParam memcachedParam)
+            MemcachedParam memcachedParam,
+            GeneratorParam generatorParam)
         throws Exception
     {
         // 負荷試験のタスクを取得する.
@@ -70,6 +74,9 @@ public class Load {
         // FIXME: memcachedParam を直接渡すのではなく、専用ファクトリでラッ
         // ピングする方が良い.
         factory.setMemcachedAdapterFactory(memcachedParam);
+
+        // その他のパラメータを設定する.
+        Generator.setGeneratorParam(generatorParam);
 
         // 負荷試験を実行する.
         boolean retval = false;
@@ -91,7 +98,8 @@ public class Load {
     private static boolean parseArgs(
             String[] args,
             WorkloadParam param,
-            MemcachedParam param2)
+            MemcachedParam param2,
+            GeneratorParam param3)
     {
         for (int i = 0, I = args.length; i < I; ++i) {
             String first = args[i];
@@ -128,6 +136,16 @@ public class Load {
                 param2.setAdapterName(second);
                 ++i;
             } else {
+                // Try to parse as GeneratorParam.
+                int skip = param3.parseArgs(first, second);
+                if (skip < 0) {
+                    return false;
+                } else if (skip > 0) {
+                    i += skip - 1;
+                    continue;
+                }
+
+                // Otherwise, parse as task arguments.
                 while (i < I) {
                     param.taskArgs.add(args[i]);
                     ++i;
