@@ -1,6 +1,8 @@
 package com.example.app.memcached;
 
 import com.example.app.memcached.task.DeleteTask;
+import com.example.app.memcached.task.Generator;
+import com.example.app.memcached.task.GeneratorParam;
 import com.example.app.memcached.task.GetTask2;
 import com.example.app.memcached.task.GetTask;
 import com.example.app.memcached.task.SetTask;
@@ -49,7 +51,9 @@ public class Benchmark {
 
         public int parallelCount = 10;
 
-        public TaskParam taskParam = new TaskParam();
+        public final TaskParam taskParam = new TaskParam();
+
+        public final GeneratorParam generatorParam = new GeneratorParam();
 
         public String adapter = "memcached";
 
@@ -116,6 +120,14 @@ public class Benchmark {
             } else if ("-a".equals(first) && second != null) {
                 ++i;
                 param.adapter = second;
+            } else {
+                int skip = param.generatorParam.parseArgs(first, second);
+                if (skip < 0) {
+                    return false;
+                } else if (skip > 0) {
+                    i += skip - 1;
+                    continue;
+                }
             }
         }
 
@@ -156,6 +168,7 @@ public class Benchmark {
         long score = 0;
 
         try {
+            Generator.setGeneratorParam(param.generatorParam);
             BenchmarkParam param2 = new BenchmarkParam(
                     param.parallelCount);
             taskFactory.setTaskParam(param.taskParam);
