@@ -1,76 +1,91 @@
-事前準備:
+PREPARATION
+===========
+Nothing especially.
 
-  特に無し。
+HOW TO COMPILE
+==============
 
-コンパイル:
+    $ mvn compile
 
-  $ mvn compile
+EXECUTE TO EXAMINATE
+====================
 
-試験実行例:
+    $ mvn exec:java -Dexec.args='bench set [OPTIONS]'
+    $ mvn exec:java -Dexec.args='load -t mix [OPTIONS] [MODE-OPTIONS]'
 
-  $ mvn exec:java -Dexec.args='bench set [OPTIONS]'
-  $ mvn exec:java -Dexec.args='load -t mix [OPTIONS] [MODE-OPTIONS]'
+BUILD EXECUTABLE JAR
+====================
 
-実行可能jarの作成:
+    $ mvn assembly:assembly
 
-  $ mvn assembly:assembly
+Destination file: target/memcached_benchmark-{VERSION}-runnable.jar
 
-  出力ファイル: target/memcached_benchmark-{VERSION}-runnable.jar
+EXECUTE WITH JAR
+================
 
-実行可能jarの実行:
+    $ java -jar memcached_benchmark-{VERSION}-runnable.jar {MODE} [OPTIONS]
 
-  $ java -jar memcached_benchmark-{VERSION}-runnable.jar {MODE} [OPTIONS]
+COMMON OPTIONS
+--------------
 
-共通OPTION:
+ * -kp {STR}   Prefix for keys.
+ * -vv         Flag. Use valiable length values.
+ * -vx {NUM}   Valiable max length for values. (default:100)
 
-  -kp {STR}     キーのprefix文字列を指定する
-  -vv           可変長の値を利用する/フラグ動作
-  -vx {NUM}     可変長の値の、最大追加長を指定する (default:100)
+BENCHMARK TEST MODE
+-------------------
+Do benchmark test against KVS server, which have memcached protocol.
 
-引数の書式(ベンチマーク時): bench {MODE} [OPTIONS]
+ARGUMENTS FORMAT: bench {MODE} [OPTIONS]
 
-  MODE:
-    set         値を保存する
-    get         値を取得する
-    get30       値を取得する(キーのヒット率30%)
-    delete      値を削除する
+ * MODE
+  + set         Benchmark test of SET operations.
+  + get         Benchmark test of GET operations.
+  + get30       Benchmark test of GET operations.  (Key hit rate is 30%)
+  + delete      Benchmark test of DELETE operations.
 
-  OPTIONS:
-    -a {ADPT}   memcached実装を選択する (default: memcached)
-        xmemcached      XMemcached
-        memcached       Memcached client for Java
-    -w          計測前にウォームアップする (default:しない)
-    -s {ADDR}   memcachedサーバのアドレスを指定する (default: localhost:11211)
-    -p {NUM}    スレッド数を指定する (default:10)
-    -i {NUM}    スレッド毎の繰り返し数を指定する (default:10000)
-    -r {NUM}    値の内容のリビジョンを指定する (default:0)
+ * OPTIONS
+  + -a {ADPT}   Select KVS implementation adapter(default: memcached)
+   - xmemcached     XMemcached
+   - memcached      Memcached client for Java
+  + -w          Make warm up before benchmark test. (default: NO)
+  + -s {ADDR}   Address of KVS server. (default: localhost:11211)
+  + -p {NUM}    Concurrent thread number. (default:10)
+  + -i {NUM}    Iteration count for each thread. (default:10000)
+  + -r {NUM}    Value contents revision. (default:0)
 
-引数の書式(負荷試験時): load -t {MODE} [OPTIONS] [MODE-OPTIONS]
+LOAD TEST MODE
+--------------
+Do high load test against KVS server, which have memcached protocol.
 
-  MODE:
-    get         値を取得する負荷試験
-    mix		設定と取得を組み合わせた負荷試験
+ARGUMENTS FORMAT: load -t {MODE} [OPTIONS] [MODE-OPTIONS]
 
-  OPTIONS:
-    -a {ADPT}   memcached実装を選択する (default: memcached)
-        memcached       Memcached client for Java
-        xmemcached      XMemcached
-    -s {ADDR}   memcachedサーバのアドレスを指定する (default: localhost:11211)
-    -tp {NUM}   タスクの並列度を指定する (default: 1)
-    -ti {NUM}   タスク実行のインターバルをmsecで指定する
-                0を指定するとインターバル無く連続実行 (default: 0)
-    -ri {NUM}   動作レポートを表示するインターバルをmsecで指定する
-                (default: 5000)
-    -rf {FNAME} 動作レポートを出力するファイルを指定する
-                (default: ファイルに出力しない)
-    -fc {NUM}   終了までのタスク実行回数 (default: 終了しない)
-    -ft {NUM}   終了時刻を指定する (default: 終了しない)
-                現在は終了までの秒数の形式でのみを指定できる
+ * MODE
+  + get         Make load by GET operation.
+  + mix		Make load by GET and SET operations.
 
-  MODE-OPTIONS (get): なし
+ * OPTIONS
+  + -a {ADPT}   Select KVS implementation adapter(default: memcached)
+   - memcached      Memcached client for Java
+   - xmemcached     XMemcached
+  + -s {ADDR}   Address of KVS server. (default: localhost:11211)
+  + -tp {NUM}   Concurrent task couunt. (default: 1)
+  + -ti {NUM}   Interval of between two tasks im milliseconds.
+                Zero cause invoke a next task as soon as possible. (default: 0)
+  + -ri {NUM}   Interval to show log report in milliseconds.
+                (default: 5000,  (= 5 seconds))
+  + -rf {FNAME} Output log report to the file.
+                (default: no file to output)
+  + -fc {NUM}   Tasks count limitation to end load test
+                (default: infinity, never end)
+  + -ft {NUM}   Period to load test (default: never end by time).
+                Currentry only support "seconds".
+                (ex. '-ft 100' will end in 100 senconds)
 
-  MODE-OPTIONS (mix):
-    -mix-gk	取得するキーの数 (default: 10000)
-    -mix-sk	設定するキーの数 (default: 3000)
-    -mix-si	設定を実行するインターバルをsecで指定する (default: 3600)
+ * MODE-OPTIONS (get): NONE
+
+ *  MODE-OPTIONS (mix):
+  + -mix-gk	Number of keys variation to GET operations. (default: 10000)
+  + -mix-sk	Number of keys variation to SET operations. (default: 3000)
+  + -mix-si	Interval to do SET operations in seconds. (default: 3600)
 
